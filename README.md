@@ -2,7 +2,7 @@
 
 I'm from Hungary and I enjoy making apps, trying out ideas and automating things I would otherwise do by hand.
 
-I mostly use Python, Java and TypeScript. I'm interested in AI, working with data and software testing. A lot of my ideas come from running, hiking or everyday problems I want to solve.
+I mostly use Python and Java. I'm interested in AI, working with data and software testing. A lot of my ideas come from running, hiking or everyday problems I want to solve.
 
 Some of the things here are experiments. Others are tools I use myself. I like learning by building something and seeing how it works in practice.
 
