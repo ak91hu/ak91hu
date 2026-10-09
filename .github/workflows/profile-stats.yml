@@ -1,0 +1,52 @@
+name: Refresh profile stats
+
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/update_stats.py'
+      - 'tests/test_stats.py'
+      - '.github/workflows/profile-stats.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: profile-stats
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the profile
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: main
+
+      - name: Check the activity calculations
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Fetch the latest numbers
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROFILE_USERNAME: ${{ github.repository_owner }}
+        run: python3 scripts/update_stats.py
+
+      - name: Save the updated profile
+        run: |
+          if git diff --quiet -- README.md; then
+            echo "The stats are already up to date."
+            exit 0
+          fi
+          git add README.md
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -m 'docs: refresh profile stats'
+          git push origin HEAD:main
